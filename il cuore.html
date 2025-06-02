@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Cuore e il Sistema Circolatorio - Sito Interattivo</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0d1b2a, #1b263b);
+            color: #e0e0e0;
+            overflow-x: hidden;
+            position: relative;
+            font-size: 18px;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/circuit-pattern.png');
+            opacity: 0.05;
+            z-index: -1;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px;
+            position: relative;
+        }
+        header {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 3.5em;
+            color: #00d4ff;
+            text-shadow: 0 0 10px #00d4ff;
+            animation: glow 2s infinite alternate;
+        }
+        nav {
+            background: #34495e;
+            padding: 10px 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        nav a {
+            color: #ecf0f1;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 1.2em;
+            transition: color 0.3s ease;
+        }
+        nav a:hover {
+            color: #3498db;
+        }
+        section {
+            background: rgba(20, 40, 60, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+            margin-bottom: 50px;
+            animation: fadeIn 1.5s ease-in;
+            border: 1px solid #00d4ff;
+        }
+        section h2 {
+            color: #00d4ff;
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 0 0 5px #00d4ff;
+        }
+        section h3 {
+            color: #00d4ff;
+            font-size: 1.5em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        section p, section ul {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        section ul {
+            list-style-type: disc;
+            padding-left: 40px;
+        }
+        section ul ul {
+            list-style-type: circle;
+            padding-left: 30px;
+        }
+        /* Stile per il quiz */
+        .quiz-container {
+            margin-top: 40px;
+            text-align: center;
+        }
+        .quiz-selector {
+            margin-bottom: 20px;
+        }
+        .quiz-selector select {
+            padding: 10px;
+            font-size: 1.2em;
+            background: rgba(30, 50, 70, 0.95);
+            color: #e0e0e0;
+            border: 1px solid #00d4ff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .quiz-timer {
+            font-size: 1.5em;
+            color: #00d4ff;
+            margin-bottom: 20px;
+        }
+        .quiz-balls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .quiz-ball {
+            width: 40px;
+            height: 40px;
+            background: rgba(30, 50, 70, 0.95);
+            border: 2px solid #00d4ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1em;
+            color: #e0e0e0;
+            transition: background 0.3s ease;
+        }
+        .quiz-ball.correct {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        .quiz-ball.incorrect {
+            background: #ff0000;
+            color: #000;
+            box-shadow: 0 0 10px #ff0000;
+        }
+        .quiz-question {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #00d4ff;
+        }
+        .quiz-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .quiz-option {
+            background: rgba(30, 50, 70, 0.95);
+            padding: 15px 30px;
+            border-radius: 10px;
+            border: 1px solid #00d4ff;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-size: 1.1em;
+        }
+        .quiz-option:hover {
+            background: rgba(0, 212, 255, 0.3);
+        }
+        .quiz-feedback {
+            margin-top: 20px;
+            font-size: 1.2em;
+            display: none;
+        }
+        .correct {
+            color: #00ff00;
+        }
+        .incorrect {
+            color: #ff0000;
+        }
+        .quiz-result {
+            margin-top: 20px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        .retry-button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: #00d4ff;
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .retry-button:hover {
+            background: #3498db;
+        }
+        footer {
+            background: #2c3e50;
+            color: #ecf0f1;
+            text-align: center;
+            padding: 20px 0;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        footer p {
+            margin: 0;
+            font-size: 1em;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff; }
+            to { text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff; }
+        }
+        @media (max-width: 768px) {
+            nav a {
+                display: block;
+                margin: 10px 0;
+            }
+            section {
+                padding: 20px;
+            }
+            .quiz-options {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .quiz-ball {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8em;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Audio del cuore che pulsa -->
+    <audio id="heartbeat" src="heartbeat.mp3" autoplay loop></audio>
+
+    <header>
+        <h1>Il Cuore e il Sistema Circolatorio</h1>
+        <p>Scopri come funziona il cuore e il sistema circolatorio</p>
+    </header>
+
+    <nav>
+        <a href="#cuore">Il Cuore</a>
+        <a href="#arterie">Le Arterie</a>
+        <a href="#capillari">I Capillari</a>
+        <a href="#vene">Le Vene</a>
+        <a href="#quiz">Quiz</a>
+    </nav>
+
+    <div class="container">
+        <section id="cuore">
+            <h2>Il Cuore</h2>
+            <p>Il cuore è il perno della circolazione sanguigna, il motore che consente di trasportare l’ossigeno ricevuto dai polmoni alle cellule di tessuti e organi per nutrirli e di scambiare l’anidride carbonica, che rappresenta uno scarto dell’attività metabolica delle cellule, a livello dei polmoni. Il cuore è un organo cavo suddiviso in quattro camere: due atri e due ventricoli sovrapposti nel lato sinistro e destro e divisi tra di loro da pareti chiamate setti. Alla nascita, il cuore di un neonato pesa circa 20-21 grammi. Nell’adulto raggiunge i 250-300 grammi. Il cuore è posto nel torace, dietro lo sterno che lo protegge, posizionato leggermente a sinistra e poggiato sul diaframma.</p>
+            <p>Ha una forma conica ed è composto da tessuti sovrapposti:</p>
+            <ul>
+                <li><strong>Il pericardio:</strong> una sacca sierosa che lo avvolge e protegge;</li>
+                <li><strong>L’epicardio:</strong> lo strato più esterno del cuore;</li>
+                <li><strong>Il miocardio:</strong> il "muscolo" del cuore;</li>
+                <li><strong>L’endocardio:</strong> che costituisce le pareti interne del cuore.</li>
+            </ul>
+            <p>Il cuore è formato da tessuto muscolare striato involontario, ma a differenza degli altri muscoli del corpo umano il cuore è capace di generare da solo lo stimolo nervoso che ne assicura il movimento. Il miocardio, in particolare, è composto da fibre muscolari e da cellule cardiache chiamate miocardiociti. Queste cellule sono in grado di assicurare l’impulso nervoso necessario alla contrazione, cioè il battito cardiaco che permette la circolazione sanguigna. Il "generatore" di questo stimolo è il nodo seno atriale, posto tra vena cava superiore e atrio destro, che trasmette l’impulso a contrarsi a tutto il cuore attraverso le fibre muscolari.</p>
+            <p>Nel cuore si trovano anche fibre nervose autonome che costituiscono il plesso cardiaco, mentre il nervo vago e le fibre simpatiche connettono l’organo con il sistema simpatico, parasimpatico e sensitivo assicurando la coordinazione del cuore con gli stimoli cerebrali. Nel cuore sono presenti quattro valvole, che come dei "rubinetti" controllano l’unidirezionalità del flusso del sangue tra atri e ventricoli (valvola tricuspide e valvola mitrale, dette valvole atrioventricolari) e tra il cuore e i vasi sanguigni (valvola polmonare e valvola aortica, dette valvole semilunari).</p>
+            <p>I vasi sanguigni che comunicano con il cuore garantiscono lo scambio tra ossigeno e anidride carbonica da e verso tessuti e organi: sono le vene (cava inferiore e cava superiore) che portano il sangue carico di anidride carbonica dagli organi e dai tessuti al cuore; l’arteria polmonare e la vena polmonare che garantiscono il flusso di sangue tra cuore e polmoni; l’aorta, l’arteria principale del corpo umano, che riporta e distribuisce il sangue carico di ossigeno all’organismo.</p>
+
+            <h3>Parti del Cuore</h3>
+            <p>Fanno parte del cuore:</p>
+            <ul>
+                <li><strong>Atrio destro:</strong> Riceve il sangue venoso da ossigenare dalle due vene cave, quella superiore e quella inferiore. Comunica con il ventricolo destro attraverso la valvola tricuspide.</li>
+                <li><strong>Atrio sinistro:</strong> Più piccolo per volume e spessore rispetto all’atrio destro, è disposto trasversalmente, coprendo in parte l’atrio destro. Comunica con il ventricolo sinistro attraverso la valvola mitrale, costituita da due lembi contrapposti (cuspidi).</li>
+                <li><strong>Valvola aortica:</strong> Detta semilunare aortica per la sua forma a semiluna, è posta tra il ventricolo sinistro e l’aorta con la funzione di assicurare che il sangue ricco di ossigeno non torni indietro nel suo percorso.</li>
+                <li><strong>Valvola mitrale:</strong> Posta tra l’atrio sinistro e il ventricolo sinistro, ha la funzione di assicurare che il sangue non torni indietro nel suo percorso attraverso il cuore, ma che il flusso proceda in un’unica direzione.</li>
+                <li><strong>Valvola polmonare:</strong> Ha la forma di una semiluna ed è posta tra il ventricolo destro e l’arteria polmonare con la funzione di assicurare che il sangue non ossigenato proceda in un’unica direzione verso i polmoni.</li>
+                <li><strong>Valvola tricuspide:</strong> Posta tra l’atrio destro e il ventricolo destro, ha la funzione di assicurare che il sangue non torni indietro nel suo percorso attraverso il cuore, ma che il flusso proceda in un’unica direzione.</li>
+                <li><strong>Ventricolo destro:</strong> Ha la forma di una piramide triangolare e riceve il sangue venoso, non ancora ossigenato, dall’atrio destro e lo spinge verso i polmoni attraverso l’arteria polmonare.</li>
+                <li><strong>Ventricolo sinistro:</strong> Riceve il sangue ossigenato dall’atrio sinistro e lo spinge nell’aorta attraverso la valvola aortica per raggiungere il resto del corpo.</li>
+            </ul>
+
+            <h3>Funzione del Cuore</h3>
+            <p>Il cuore è una pompa: la sua funzione principale è portare il sangue ricco di ossigeno al resto del corpo, a cellule, tessuti e organi, in modo da nutrirli, e ricevere il sangue carico di anidride carbonica da inviare ai polmoni dove avviene lo scambio con l’ossigeno. Il sangue ossigenato (sangue arterioso) viaggia nell’organismo verso organi e tessuti attraverso l’aorta, l’arteria che porta il nutrimento a tutto il corpo suddividendosi in rami e capillari sempre più piccoli. Il sangue con le scorie di anidride carbonica, lo scarto dell’attività metabolica delle cellule, torna al cuore attraverso le vene cave per "ricaricarsi" di ossigeno.</p>
+            <p>Durante l’attività fisica il cuore è in grado di pompare fino a 20-30 litri di sangue al minuto per assicurare il maggior fabbisogno di sangue da parte dei muscoli; a riposo il cuore fornisce circa 5 litri di sangue ossigenato al minuto. La pressione considerata ottimale è compresa tra 130 (sistolica o alta) e 80 (diastolica o bassa) mmHg.</p>
+            <p>Il cuore garantisce questo ciclo continuo attraverso movimenti coordinati. Il ciclo cardiaco si compone di due fasi che si ripetono in media 70-80 volte al minuto a riposo: una fase di rilassamento (diastole) e una di contrazione (sistole). Durante la fase di diastole, le valvole tra atri e ventricoli sono aperte, la muscolatura delle camere è rilassata e il sangue scorre liberamente tra camere e atri. In questa fase le valvole semilunari sono chiuse, impedendo che il sangue entri nei letti vascolari. Durante la sistole, atri e ventricoli si contraggono in maniera coordinata: prima gli atri (sistole atriale) e poi i ventricoli (sistole ventricolare). Nella contrazione ventricolare la pressione del sangue spinge in alto le valvole atrio-ventricolari e ne provoca la chiusura, non permettendo che il sangue torni negli atri, e il sangue viene pompato nelle vene effluenti.</p>
+            <p>Anche il cuore ha bisogno di essere "nutrito". Questa funzione spetta alle coronarie (arterie coronarie) che irrorano di sangue ricco di ossigeno il muscolo cardiaco. Quando il miocardio non viene irrorato a sufficienza, a causa di un restringimento delle coronarie, si parla di ischemia del miocardio (cardiopatia ischemica o ischemia miocardica) che può concretizzarsi in un infarto del miocardio (o sindrome coronarica acuta). Altre patologie che possono colpire il cuore sono di origine infiammatoria, lesioni valvolari e problemi della conduzione nervosa come l’aritmia.</p>
+        </section>
+
+        <section id="arterie">
+            <h2>Le Arterie</h2>
+            <p>Le arterie sono i vasi sanguigni deputati al trasporto del sangue dal cuore a tutti i tessuti e organi del corpo umano (direzione centrifuga). A eccezione delle arterie polmonari, che trasportano sangue carico di anidride carbonica e prodotti di scarto, tutte le arterie trasportano sangue ossigenato. Le pareti delle arterie sono composte da tre tuniche, disposte una sull’altra: una tunica esterna, perlopiù elastica, di natura connettivale; una tunica media costituita da fibre muscolari lisce e una tunica interna, costituita da un tessuto dotato di fibre elastiche, a contatto col sangue. Le arterie possono essere di grosso, medio e piccolo calibro; quando il diametro è inferiore ai tre millimetri generalmente si parla di arteriole, piccoli vasi che costituiscono le porzioni terminali delle diramazioni arteriose e che precedono i capillari corrispondenti.</p>
+
+            <h3>Il Sistema Arterioso</h3>
+            <p>Il sistema arterioso è la parte del sistema circolatorio ad alta pressione. È formato da:</p>
+            <ul>
+                <li><strong>Arteria aorta:</strong> Il massimo vaso arterioso dell’organismo umano. Ha origine dal ventricolo sinistro del cuore, tramite un’apertura (regolata dalla valvola aortica), sale per un breve tratto verso l’alto (aorta ascendente); si incurva poi indietro a formare l’arco aortico (o arco sistemico), per poi continuare nell’aorta discendente (composta da due porzioni, l’aorta toracica e l’aorta addominale), per arrestarsi in corrispondenza della quarta vertebra lombare, dove si biforca nelle due arterie iliache comuni.</li>
+                <li><strong>Arterie sistemiche:</strong> I vasi sanguigni deputati al trasporto del sangue ossigenato e arricchito di sostanze nutritive dal cuore a tutti gli organi e tessuti dell’organismo. Il torace e l’addome, attraversati dall’aorta, ricevono il sangue direttamente dai suoi tanti rami collaterali, mentre per le parti del corpo più periferiche (testa, collo, bacino, arti superiori e inferiori) la vascolarizzazione è garantita dalla presenza di grossi vasi arteriosi emessi dall’aorta stessa (arteria omerale, arteria femorale, arteria carotidea, ecc.).</li>
+                <li><strong>Arterie polmonari:</strong> I due grossi vasi sanguigni responsabili del trasporto dal cuore ai polmoni del sangue carico di anidride carbonica e prodotti di scarto proveniente dalla circolazione periferica. Insieme alle vene polmonari costituiscono la circolazione polmonare, detta anche "circolazione cuore-polmoni" o "piccola circolazione".</li>
+            </ul>
+            <p>Il compito delle arterie e del sistema arterioso è trasportare il sangue dal cuore a tutti i tessuti e organi del corpo umano.</p>
+        </section>
+
+        <section id="capillari">
+            <h2>I Capillari</h2>
+            <p>I capillari sono i più piccoli vasi sanguigni dell’apparato circolatorio nei quali si diramano le arterie e le vene. Di forma cilindrica e dimensioni microscopiche, sia il sistema venoso (vene di grosso, medio e piccolo calibro e venule) sia il sistema arterioso (arterie di grosso, medio e piccolo calibro e arteriole) si diramano in vasi sanguigni sempre più piccoli fino a terminare nei capillari: questi si distribuiscono a partire dalle arteriole, ramificandosi tra le cellule dei tessuti, per poi raccogliersi in vasi più grandi, detti venule, che a loro volta riversano il loro contenuto nelle vene, tramite le quali il sangue ritorna al cuore.</p>
+            <p>Dal punto di vista funzionale i capillari rappresentano la parte più importante del sistema vascolare: mentre in tutti gli altri vasi sanguigni (arterie e arteriole, vene e venule) il sangue è solo di passaggio, nei capillari avvengono invece tutti gli scambi metabolici e respiratori tra il sangue e il liquido intercellulare che garantiscono ai tessuti il rifornimento di ossigeno e di sostanze nutritive (mediante i capillari derivanti dalle arterie) e, allo stesso tempo, l’allontanamento delle sostanze di rifiuto (mediante i capillari derivanti dalle vene).</p>
+            <p>La funzione dei capillari è resa possibile dalle loro particolari caratteristiche strutturali: a differenza delle arterie e delle vene, le loro pareti sono costituite da un singolo strato di cellule endoteliali appiattite, grazie al quale risultano molto permeabili. Il diametro dei capillari varia in base all’organo in cui si trovano: i più sottili, del diametro di 5-8 micrometri, si trovano nel polmone, nella retina e nei muscoli striati; quelli più grandi si trovano nelle ghiandole e nel midollo osseo.</p>
+            <p>Oltre alle reti formate da capillari disposte tra arterie e vene, esistono anche reti di capillari tra due arterie o tra due vene:</p>
+            <ul>
+                <li><strong>Reti mirabili arteriose:</strong> Reti di capillari tra due arterie.</li>
+                <li><strong>Reti mirabili venose:</strong> Reti di capillari tra due vene.</li>
+            </ul>
+            <p>Il compito dei capillari è quello di garantire gli scambi metabolici e respiratori tra il sangue e il liquido intercellulare affinché vengano garantiti a tutti i tessuti il rifornimento di ossigeno e di sostanze nutritive e, allo stesso tempo, l’allontanamento delle sostanze di scarto.</p>
+        </section>
+
+        <section id="vene">
+            <h2>Le Vene</h2>
+            <p>Le vene sono i vasi sanguigni deputati al trasporto del sangue dai distretti corporei periferici verso il cuore (direzione centripeta). A eccezione delle vene polmonari, che trasportano sangue ricco di ossigeno e sostanze nutritive, tutte le vene trasportano sangue carico di anidride carbonica e prodotti di scarto e povero di ossigeno. In base al diametro del vaso sanguigno, le vene si dividono dal diametro più piccolo al più grande in capillari venosi, venule, vene di piccolo calibro, vene di medio calibro e vene di grande calibro. Le pareti delle vene sono formate da tre tuniche sovrapposte una sull’altra (esterna, media e interna), risultano più sottili delle pareti delle arterie e sono caratterizzate dalla prevalenza della componente muscolare su quella elastica.</p>
+
+            <h3>Il Sistema Venoso</h3>
+            <p>Le principali strutture che formano il sistema venoso sono:</p>
+            <ul>
+                <li><strong>Vena cava superiore:</strong> Un grosso tronco venoso che trasporta verso il cuore il sangue povero di ossigeno proveniente dalla parte superiore del corpo (testa, collo, arti superiori, alcuni organi del torace). È lunga circa 7 centimetri e ha un diametro, a livello dello sbocco, di circa 22 millimetri.</li>
+                <li><strong>Vena cava inferiore:</strong> Il più grosso tronco venoso di tutto il corpo umano, il cui compito è quello di trasportare verso il cuore il sangue povero di ossigeno proveniente dalla parte inferiore del corpo (cioè dagli arti inferiori e da tutti gli organi che si trovano al di sotto del diaframma). Ha una lunghezza media di 22 cm e un diametro di circa 30 millimetri.</li>
+                <li><strong>Vene polmonari:</strong> Responsabili del trasporto del sangue ossigenato proveniente dai polmoni al cuore (precisamente all’atrio sinistro) da cui viene poi pompato nel resto dell’organismo. Insieme alle arterie polmonari costituiscono la circolazione polmonare (anche detta "circolazione cuore-polmoni" o "piccola circolazione").</li>
+            </ul>
+            <p>Il compito delle vene e del sistema venoso è portare il sangue dai distretti corporei periferici verso il cuore.</p>
+        </section>
+
+        <section id="quiz">
+            <h2>Quiz: Testa le Tue Conoscenze sul Cuore e il Sistema Circolatorio</h2>
+            <p>Seleziona un quiz qui sotto e rispondi alle 30 domande entro 30 minuti. Le palline si illumineranno man mano che rispondi, e alla fine vedrai il tuo risultato!</p>
+
+            <div class="quiz-container">
+                <div class="quiz-selector">
+                    <select id="quiz-select" onchange="selectQuiz()">
+                        <option value="0">Seleziona un Quiz</option>
+                        <option value="1">Quiz 1</option>
+                        <option value="2">Quiz 2</option>
+                        <option value="3">Quiz 3</option>
+                        <option value="4">Quiz 4</option>
+                        <option value="5">Quiz 5</option>
+                    </select>
+                </div>
+                <div class="quiz-timer" id="quiz-timer" style="display: none;">Tempo rimanente: 30:00</div>
+                <div class="quiz-balls" id="quiz-balls" style="display: none;">
+                    <!-- Le palline verranno generate dinamicamente con JavaScript -->
+                </div>
+                <div class="quiz-question" id="quiz-question"></div>
+                <div class="quiz-options" id="quiz-options"></div>
+                <div class="quiz-feedback" id="quiz-feedback"></div>
+                <div class="quiz-result" id="quiz-result"></div>
+                <button class="retry-button" id="retry-button" style="display: none;">Riprova</button>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>© 2025 Il Cuore e il Sistema Circolatorio - Tutti i diritti riservati</p>
+    </footer>
+
+    <script>
+        // 150 domande suddivise in 5 quiz
+        const allQuestions = [
+            // Quiz 1
+            [
+                { question: "Qual è la funzione principale del cuore?", options: ["Pompare sangue", "Filtrare il sangue", "Produrre globuli rossi", "Trasportare ossigeno"], correct: "Pompare sangue" },
+                { question: "Quante camere ha il cuore umano?", options: ["2", "3", "4", "5"], correct: "4" },
+                { question: "Quale parte del cuore riceve il sangue venoso da ossigenare?", options: ["Atrio sinistro", "Atrio destro", "Ventricolo sinistro", "Ventricolo destro"], correct: "Atrio destro" },
+                { question: "Quale valvola separa l’atrio sinistro dal ventricolo sinistro?", options: ["Valvola tricuspide", "Valvola mitrale", "Valvola aortica", "Valvola polmonare"], correct: "Valvola mitrale" },
+                { question: "Quale strato del cuore è il 'muscolo' del cuore?", options: ["Pericardio", "Epicardio", "Miocardio", "Endocardio"], correct: "Miocardio" },
+                { question: "Dove si trova il nodo seno atriale?", options: ["Tra vena cava superiore e atrio destro", "Nel ventricolo sinistro", "Nell’aorta", "Tra atrio sinistro e ventricolo sinistro"], correct: "Tra vena cava superiore e atrio destro" },
+                { question: "Quale valvola è detta semilunare aortica?", options: ["Valvola tricuspide", "Valvola mitrale", "Valvola aortica", "Valvola polmonare"], correct: "Valvola aortica" },
+                { question: "Quale vaso porta sangue ossigenato al corpo?", options: ["Vena cava", "Arteria polmonare", "Aorta", "Vena polmonare"], correct: "Aorta" },
+                { question: "Quale parte del cuore pompa sangue verso i polmoni?", options: ["Atrio sinistro", "Ventricolo destro", "Ventricolo sinistro", "Atrio destro"], correct: "Ventricolo destro" },
+                { question: "Quale fase del ciclo cardiaco è di rilassamento?", options: ["Sistole", "Diastole", "Sistole atriale", "Sistole ventricolare"], correct: "Diastole" },
+                { question: "Quali arterie irrorano il muscolo cardiaco?", options: ["Arterie polmonari", "Arterie coronarie", "Arterie sistemiche", "Arterie iliache"], correct: "Arterie coronarie" },
+                { question: "Cosa succede se il miocardio non viene irrorato a sufficienza?", options: ["Aritmia", "Ischemia del miocardio", "Infiammazione", "Lesione valvolare"], correct: "Ischemia del miocardio" },
+                { question: "Quanti litri di sangue pompa il cuore al minuto a riposo?", options: ["2 litri", "5 litri", "10 litri", "20 litri"], correct: "5 litri" },
+                { question: "Quale valvola separa il ventricolo destro dall’arteria polmonare?", options: ["Valvola tricuspide", "Valvola mitrale", "Valvola aortica", "Valvola polmonare"], correct: "Valvola polmonare" },
+                { question: "Quale parte del cuore riceve sangue ossigenato dai polmoni?", options: ["Atrio destro", "Atrio sinistro", "Ventricolo destro", "Ventricolo sinistro"], correct: "Atrio sinistro" },
+                { question: "Quale è la pressione ottimale del sangue?", options: ["110/70 mmHg", "130/80 mmHg", "150/90 mmHg", "170/100 mmHg"], correct: "130/80 mmHg" },
+                { question: "Quale tessuto forma il cuore?", options: ["Tessuto muscolare liscio", "Tessuto muscolare striato involontario", "Tessuto muscolare striato volontario", "Tessuto connettivo"], correct: "Tessuto muscolare striato involontario" },
+                { question: "Quale nervo connette il cuore al sistema nervoso?", options: ["Nervo vago", "Nervo ottico", "Nervo sciatico", "Nervo facciale"], correct: "Nervo vago" },
+                { question: "Quale vaso porta sangue carico di anidride carbonica al cuore?", options: ["Aorta", "Vena cava", "Arteria polmonare", "Vena polmonare"], correct: "Vena cava" },
+                { question: "Quale parte del cuore pompa sangue nell’aorta?", options: ["Atrio destro", "Atrio sinistro", "Ventricolo destro", "Ventricolo sinistro"], correct: "Ventricolo sinistro" },
+                { question: "Quale malattia è causata da un restringimento delle coronarie?", options: ["Aritmia", "Infarto del miocardio", "Lesione valvolare", "Infiammazione"], correct: "Infarto del miocardio" },
+                { question: "Quale arteria trasporta sangue carico di anidride carbonica?", options: ["Arteria polmonare", "Aorta", "Arteria sistemica", "Arteria carotidea"], correct: "Arteria polmonare" },
+                { question: "Quale parte del sistema circolatorio è ad alta pressione?", options: ["Sistema venoso", "Sistema arterioso", "Capillari", "Vene polmonari"], correct: "Sistema arterioso" },
+                { question: "Quale vaso è il massimo vaso arterioso dell’organismo?", options: ["Arteria polmonare", "Aorta", "Arteria carotidea", "Arteria femorale"], correct: "Aorta" },
+                { question: "Quali vasi garantiscono gli scambi metabolici nei tessuti?", options: ["Arterie", "Vene", "Capillari", "Venule"], correct: "Capillari" },
+                { question: "Quale parte del cuore comunica con il ventricolo destro?", options: ["Atrio sinistro", "Atrio destro", "Ventricolo sinistro", "Aorta"], correct: "Atrio destro" },
+                { question: "Quale valvola ha due lembi contrapposti (cuspidi)?", options: ["Valvola tricuspide", "Valvola mitrale", "Valvola aortica", "Valvola polmonare"], correct: "Valvola mitrale" },
+                { question: "Quale vaso trasporta sangue ossigenato dai polmoni al cuore?", options: ["Arteria polmonare", "Vena polmonare", "Vena cava", "Aorta"], correct: "Vena polmonare" },
+                { question: "Quale è il più grosso tronco venoso del corpo umano?", options: ["Vena cava superiore", "Vena cava inferiore", "Vena polmonare", "Vena femorale"], correct: "Vena cava inferiore" },
+                { question: "Quale sistema è detto 'piccola circolazione'?", options: ["Circolazione sistemica", "Circolazione polmonare", "Circolazione coronarica", "Circolazione periferica"], correct: "Circolazione polmonare" }
+            ],
+            // Quiz 2
+            [
+                { question: "Quale parte del cuore è responsabile della sistole atriale?", options: ["Atri", "Ventricoli", "Valvole", "Aorta"], correct: "Atri" },
+                { question: "Quale valvola impedisce il reflusso di sangue dall’aorta al ventricolo sinistro?", options: ["Valvola mitrale", "Valvola tricuspide", "Valvola aortica", "Valvola polmonare"], correct: "Valvola aortica" },
+                { question: "Quale strato del cuore avvolge e protegge l’organo?", options: ["Miocardio", "Pericardio", "Endocardio", "Epicardio"], correct: "Pericardio" },
+                { question: "Quale parte del cuore ha pareti più spesse?", options: ["Atrio destro", "Atrio sinistro", "Ventricolo destro", "Ventricolo sinistro"], correct: "Ventricolo sinistro" },
+                { question: "Quale vaso riceve sangue dall’atrio destro?", options: ["Vena cava", "Arteria polmonare", "Ventricolo destro", "Aorta"], correct: "Ventricolo destro" },
+                { question: "Quale fase del ciclo cardiaco permette al sangue di fluire dagli atri ai ventricoli?", options: ["Sistole", "Diastole", "Sistole ventricolare", "Sistole atriale"], correct: "Diastole" },
+                { question: "Quale arteria è responsabile della piccola circolazione?", options: ["Arteria polmonare", "Aorta", "Arteria carotidea", "Arteria femorale"], correct: "Arteria polmonare" },
+                { question: "Quale parte del cuore è più piccola per volume?", options: ["Atrio destro", "Atrio sinistro", "Ventricolo destro", "Ventricolo sinistro"], correct: "Atrio sinistro" },
+                { question: "Quale valvola separa l’atrio destro dal ventricolo destro?", options: ["Valvola mitrale", "Valvola tricuspide", "Valvola aortica", "Valvola polmonare"], correct: "Valvola tricuspide" },
+                { question: "Quale strato del cuore è a contatto con il sangue?", options: ["Pericardio", "Epicardio", "Miocardio", "Endocardio"], correct: "Endocardio" },
+                { question: "Quale vaso porta sangue deossigenato dal corpo all’atrio destro?", options: ["Vena polmonare", "Vena cava", "Arteria polmonare", "Aorta"], correct: "Vena cava" },
+                { question: "Quale parte del cuore pompa sangue ossigenato al corpo?", options: ["Atrio destro", "Atrio sinistro", "Ventricolo destro", "Ventricolo sinistro"], correct: "Ventricolo sinistro" },
+                { question: "Quale malattia è associata a problemi di conduzione nervosa nel cuore?", options: ["Ischemia", "Aritmia", "Infarto", "Lesione valvolare"], correct: "Aritmia" },
+                { question: "Quanti litri di sangue può pompare il cuore durante l’attività fisica?", options: ["5 litri", "10 litri", "20-30 litri", "40 litri"], correct: "20-30 litri" },
+                { question: "Quale valvola ha una forma a semiluna?", options: ["Valvola mitrale", "Valvola tricuspide", "Valvola aortica", "Valvola polmonare"], correct: "Valvola polmonare" },
+                { question: "Quale parte del cuore riceve sangue dall’atrio sinistro?", options: ["Atrio destro", "Ventricolo sinistro", "Ventricolo destro", "Aorta"], correct: "Ventricolo sinistro" },
+                { question: "Quale è la pressione sistolica ottimale?", options: ["110 mmHg", "130 mmHg", "150 mmHg", "170 mmHg"], correct: "130 mmHg" },
+                { question: "Quale tipo di tessuto muscolare forma il cuore?", options: ["Liscio", "Striato volontario", "Striato involontario", "Connettivo"], correct: "Striato involontario" },
+                { question: "Quale nervo regola la frequenza cardiaca?", options: ["Nervo vago", "Nervo ottico", "Nervo sciatico", "Nervo facciale"], correct: "Nervo vago" },
+                { question: "Quale vaso porta sangue deossigenato ai polmoni?", options: ["Aorta", "Vena cava", "Arteria polmonare", "Vena polmonare"], correct: "Arteria polmonare" },
+                { question: "Quale parte del cuore è responsabile della sistole ventricolare?", options: ["Atri", "Ventricoli", "Valvole", "Aorta"], correct: "Ventricoli" },
+                { question: "Quale malattia è causata da un’ostruzione delle arterie coronarie?", options: ["Aritmia", "Infarto del miocardio", "Lesione valvolare", "Infiammazione"], correct: "Infarto del miocardio" },
+                { question: "Quale parte del sistema circolatorio è responsabile della piccola circolazione?", options: ["Sistema venoso", "Sistema arterioso", "Circolazione polmonare", "Capillari"], correct: "Circolazione polmonare" },
+                { question: "Quale vaso è il più grande del corpo umano?", options: ["Arteria polmonare", "Aorta", "Arteria carotidea", "Arteria femorale"], correct: "Aorta" },
+                { question: "Quali vasi sono i più piccoli del sistema circolatorio?", options: ["Arterie", "Vene", "Capillari", "Venule"], correct: "Capillari" },
+                { question: "Quale parte del cuore comunica con l’atrio sinistro?", options: ["Atrio destro", "Ventricolo sinistro", "Ventricolo destro", "Aorta"], correct: "Ventricolo sinistro" },
+                { question: "Quale valvola ha tre lembi?", options: ["Valvola tricuspide", "Valvola mitrale", "Valvola aortica", "Valvola polmonare"], correct: "Valvola tricuspide" },
+                { question: "Quale vaso trasporta sangue ossigenato al cuore?", options: ["Arteria polmonare", "Vena polmonare", "Vena cava", "Aorta"], correct: "Vena polmonare" },
+                { question: "Quale è il più grande tronco venoso del corpo?", options: ["Vena cava superiore", "Vena cava inferiore", "Vena polmonare", "Vena femorale"], correct: "Vena cava inferiore" },
+                { question: "Quale sistema è responsabile della circolazione cuore-polmoni?", options: ["Circolazione sistemica", "Circolazione polmonare", "Circolazione coronarica", "Circolazione periferica"], correct: "Circolazione polmonare" }
+            ],
+            // Quiz 3
+            [
+                { question: "Quale parte del cuore è responsabile della contrazione?", options: ["Pericardio", "Miocardio", "Endocardio", "Epicardio"], correct: "Miocardio" },
+                { question: "Quale valvola impedisce il reflusso di sangue dal ventricolo destro?", options: ["Valvola mitrale", "Valvola tricuspide", "Valvola aortica", "Valvola polmonare"], correct: "Valvola tricuspide" },
+                { question: "Quale strato del cuore è più esterno?", options: ["Pericardio", "Epicardio", "Miocardio", "Endocardio"], correct: "Pericardio" },
+                { question: "Quale parte del cuore ha la forma di una piramide triangolare?", options: ["Atrio destro", "Atrio sinistro", "Ventricolo destro", "Ventricolo sinistro"], correct: "Ventricolo destro" },
+                { question: "Quale vaso riceve sangue dal ventricolo sinistro?", options: ["Vena cava", "Arteria polmonare", "Ventricolo destro", "Aorta"], correct: "Aorta" },
+                { question: "Quale fase del ciclo cardiaco chiude le valvole semilunari?", options: ["Sistole", "Diastole", "Sistole ventricolare", "Sistole atriale"], correct: "Diastole" },
+                { question: "Quale arteria è responsabile della grande circolazione?", options: ["Arteria polmonare", "Aorta", "Arteria carotidea", "Arteria femorale"], correct: "Aorta" },
+                { question: "Quale parte del cuore è coperta dall’atrio sinistro?", options: ["Atrio destro", "Ventricolo sinistro", "Ventricolo destro", "Aorta"], correct: "Atrio destro" },
+                { question: "Quale valvola separa il ventricolo sinistro dall’aorta?", options: ["Valvola mitrale", "Valvola tricuspide", "Valvola aortica", "Valvola polmonare"], correct: "Valvola aortica" },
+                { question: "Quale strato del cuore forma le pareti interne?", options: ["Pericardio", "Epicardio", "Miocardio", "Endocardio"], correct: "Endocardio" },
+                { question: "Quale vaso porta sangue deossigenato dal corpo inferiore?", options: ["Vena polmonare", "Vena cava inferiore", "Arteria polmonare", "Aorta"], correct: "Vena cava inferiore" },
+                { question: "Quale parte del cuore pompa sangue deossigenato ai polmoni?", options: ["Atrio destro", "Atrio sinistro", "Ventricolo destro", "Ventricolo sinistro"], correct: "Ventricolo destro" },
+                { question: "Quale malattia è associata a lesioni delle valvole cardiache?", options: ["Ischemia", "Aritmia", "Infarto", "Lesione valvolare"], correct: "Lesione valvolare" },
+                { question: "Quanti battiti al minuto ha il cuore a riposo?", options: ["40-50", "70-80", "100-110", "120-130"], correct: "70-80" },
+                { question: "Quale valvola ha una forma a semiluna e si trova tra il ventricolo destro e l’arteria polmonare?", options: ["Valvola mitrale", "Valvola tricuspide", "Valvola aortica", "Valvola polmonare"], correct: "Valvola polmonare" },
+                { question: "Quale parte del cuore riceve sangue dalla vena polmonare?", options: ["Atrio destro", "Atrio sinistro", "Ventricolo destro", "Ventricolo sinistro"], correct: "Atrio sinistro" },
+                { question: "Quale è la pressione diastolica ottimale?", options: ["60 mmHg", "80 mmHg", "100 mmHg", "120 mmHg"], correct: "80 mmHg" },
+                { question: "Quale tipo di cellule sono responsabili del battito cardiaco?", options: ["Miocardiociti", "Neuroni", "Cellule epiteliali", "Cellule connettive"], correct: "Miocardiociti" },
+                { question: "Quale sistema nervoso regola il cuore?", options: ["Sistema nervoso centrale", "Sistema nervoso autonomo", "Sistema nervoso periferico", "Sistema nervoso somatico"], correct: "Sistema nervoso autonomo" },
+                { question: "Quale vaso porta sangue ossigenato al corpo?", options: ["Aorta", "Vena cava", "Arteria polmonare", "Vena polmonare"], correct: "Aorta" },
+                { question: "Quale parte del cuore è responsabile della diastole?", options: ["Atri", "Ventricoli", "Valvole", "Aorta"], correct: "Atri e ventricoli" },
+                { question: "Quale malattia è causata da un’infiammazione del cuore?", options: ["Aritmia", "Infarto del miocardio", "Lesione valvolare", "Infiammazione"], correct: "Infiammazione" },
+                { question: "Quale parte del sistema circolatorio è responsabile della grande circolazione?", options: ["Sistema venoso", "Sistema arterioso", "Circolazione polmonare", "Capillari"], correct: "Sistema arterioso" },
+                { question: "Quale vaso si biforca nelle arterie iliache comuni?", options: ["Arteria polmonare", "Aorta", "Arteria carotidea", "Arteria femorale"], correct: "Aorta" },
+                { question: "Quali vasi sono responsabili degli scambi metabolici?", options: ["Arterie", "Vene", "Capillari", "Venule"], correct: "Capillari" },
+                { question: "Quale parte del cuore comunica con l’atrio destro?", options: ["Atrio sinistro", "Ventricolo destro", "Ventricolo sinistro", "Aorta"], correct: "Ventricolo destro" },
+                { question: "Quale valvola ha due cuspidi?", options: ["Valvola tricuspide", "Valvola mitrale", "Valvola aortica", "Valvola polmonare"], correct: "Valvola mitrale" },
+                { question: "Quale vaso trasporta sangue deossigenato dal cuore ai polmoni?", options: ["Arteria polmonare", "Vena polmonare", "Vena cava", "Aorta"], correct: "Arteria polmonare" },
+                { question: "Quale è il più grande tronco venoso del corpo superiore?", options: ["Vena cava superiore", "Vena cava inferiore", "Vena polmonare", "Vena femorale"], correct: "Vena cava superiore" },
+                { question: "Quale sistema è responsabile della circolazione sistemica?", options: ["Circolazione sistemica", "Circolazione polmonare", "Circolazione coronarica", "Circolazione periferica"], correct: "Circolazione sistemica" }
+            ],
+            // Quiz 4
+            [
+                { question: "Quale parte del cuore genera l’impulso nervoso per il battito?", options: ["Nodo seno atriale", "Miocardio", "Endocardio", "Epicardio"], correct: "Nodo seno atriale" },
+                { question: "Quale valvola impedisce il reflusso di sangue dall’arteria polmonare?", options: ["Valvola mitrale", "Valvola tricuspide", "Valvola aortica", "Valvola polmonare"], correct: "Valvola polmonare" },
+                { question: "Quale strato del cuore è tra il pericardio e il miocardio?", options: ["Pericardio", "Epicardio", "Miocardio", "Endocardio"], correct: "Epicardio" },
+                { question: "Quale parte del cuore ha un asse trasversale?", options: ["Atrio destro", "Atrio sinistro", "Ventricolo destro", "Ventricolo sinistro"], correct: "Atrio sinistro" },
+                { question: "Quale vaso riceve sangue dal ventricolo destro?", options: ["Vena cava", "Arteria polmonare", "Ventricolo sinistro", "Aorta"], correct: "Arteria polmonare" },
+                { question: "Quale fase del ciclo cardiaco apre le valvole atrio-ventricolari?", options: ["Sistole", "Diastole", "Sistole ventricolare", "Sistole atriale"], correct: "Diastole" },
+                { question: "Quale arteria è responsabile della circolazione coronarica?", options: ["Arteria polmonare", "Aorta", "Arteria coronaria", "Arteria femorale"], correct: "Arteria coronaria" },
+                { question: "Quale parte del cuore è più spessa per volume?", options: ["Atrio destro", "Atrio sinistro", "Ventricolo destro", "Ventricolo sinistro"], correct: "Ventricolo sinistro" },
+                { question: "Quale valvola separa l’atrio sinistro dal ventricolo sinistro?", options: ["Valvola mitrale", "Valvola tricuspide", "Valvola aortica", "Valvola polmonare"], correct: "Valvola mitrale" },
+                { question: "Quale strato del cuore è responsabile della contrazione?", options: ["Pericardio", "Epicardio", "Miocardio", "Endocardio"], correct: "Miocardio" },
+                { question: "Quale vaso porta sangue deossigenato dal corpo superiore?", options: ["Vena polmonare", "Vena cava superiore", "Arteria polmonare", "Aorta"], correct: "Vena cava superiore" },
+                { question: "Quale parte del cuore pompa sangue ossigenato al corpo?", options: ["Atrio destro", "Atrio sinistro", "Ventricolo destro", "Ventricolo sinistro"], correct: "Ventricolo sinistro" },
+                { question: "Quale malattia è associata a un’infiammazione del miocardio?", options: ["Ischemia", "Aritmia", "Infarto", "Miocardite"], correct: "Miocardite" },
+                { question: "Quanti litri di sangue pompa il cuore al minuto durante l’attività fisica?", options: ["5 litri", "10 litri", "20-30 litri", "40 litri"], correct: "20-30 litri" },
+                { question: "Quale valvola ha una forma a semiluna e si trova tra il ventricolo sinistro e l’aorta?", options: ["Valvola mitrale", "Valvola tricuspide", "Valvola aortica", "Valvola polmonare"], correct: "Valvola aortica" },
+                { question: "Quale parte del cuore riceve sangue dalla vena cava?", options: ["Atrio destro", "Atrio sinistro", "Ventricolo destro", "Ventricolo sinistro"], correct: "Atrio destro" },
+                { question: "Quale è la pressione sistolica ottimale per un adulto?", options: ["110 mmHg", "130 mmHg", "150 mmHg", "170 mmHg"], correct: "130 mmHg" },
+                { question: "Quale tipo di cellule formano il miocardio?", options: ["Miocardiociti", "Neuroni", "Cellule epiteliali", "Cellule connettive"], correct: "Miocardiociti" },
+                { question: "Quale sistema nervoso regola la frequenza cardiaca?", options: ["Sistema nervoso centrale", "Sistema nervoso autonomo", "Sistema nervoso periferico", "Sistema nervoso somatico"], correct: "Sistema nervoso autonomo" },
+                { question: "Quale vaso porta sangue deossigenato dal cuore ai polmoni?", options: ["Aorta", "Vena cava", "Arteria polmonare", "Vena polmonare"], correct: "Arteria polmonare" },
+                { question: "Quale parte del cuore è responsabile della contrazione ventricolare?", options: ["Atri", "Ventricoli", "Valvole", "Aorta"], correct: "Ventricoli" },
+                { question: "Quale malattia è causata da un’ostruzione delle arterie coronarie?", options: ["Aritmia", "Infarto del miocardio", "Lesione valvolare", "Infiammazione"], correct: "Infarto del miocardio" },
+                { question: "Quale parte del sistema circolatorio è responsabile della piccola circolazione?", options: ["Sistema venoso", "Sistema arterioso", "Circolazione polmonare", "Capillari"], correct: "Circolazione polmonare" },
+                { question: "Quale vaso si divide in aorta toracica e addominale?", options: ["Arteria polmonare", "Aorta", "Arteria carotidea", "Arteria femorale"], correct: "Aorta" },
+                { question: "Quali vasi sono i più permeabili del sistema circolatorio?", options: ["Arterie", "Vene", "Capillari", "Venule"], correct: "Capillari" },
+                { question: "Quale parte del cuore comunica con il ventricolo sinistro?", options: ["Atrio sinistro", "Ventricolo destro", "Atrio destro", "Aorta"], correct: "Atrio sinistro" },
+                { question: "Quale valvola ha tre cuspidi?", options: ["Valvola tricuspide", "Valvola mitrale", "Valvola aortica", "Valvola polmonare"], correct: "Valvola tricuspide" },
+                { question: "Quale vaso trasporta sangue ossigenato dai polmoni al cuore?", options: ["Arteria polmonare", "Vena polmonare", "Vena cava", "Aorta"], correct: "Vena polmonare" },
+                { question: "Quale è il più grande tronco venoso del corpo inferiore?", options: ["Vena cava superiore", "Vena cava inferiore", "Vena polmonare", "Vena femorale"], correct: "Vena cava inferiore" },
+                { question: "Quale sistema è responsabile della circolazione cuore-polmoni?", options: ["Circolazione sistemica", "Circolazione polmonare", "Circolazione coronarica", "Circolazione periferica"], correct: "Circolazione polmonare" }
+            ],
+            // Quiz 5
+            [
+                { question: "Quale parte del cuore trasmette l’impulso nervoso?", options: ["Nodo seno atriale", "Miocardio", "Endocardio", "Epicardio"], correct: "Nodo seno atriale" },
+                { question: "Quale valvola impedisce il reflusso di sangue dal ventricolo sinistro?", options: ["Valvola mitrale", "Valvola tricuspide", "Valvola aortica", "Valvola polmonare"], correct: "Valvola aortica" },
+                { question: "Quale strato del cuore è il più interno?", options: ["Pericardio", "Epicardio", "Miocardio", "Endocardio"], correct: "Endocardio" },
+                { question: "Quale parte del cuore ha un volume maggiore?", options: ["Atrio destro", "Atrio sinistro", "Ventricolo destro", "Ventricolo sinistro"], correct: "Ventricolo sinistro" },
+                { question: "Quale vaso riceve sangue dall’atrio sinistro?", options: ["Vena cava", "Arteria polmonare", "Ventricolo sinistro", "Aorta"], correct: "Ventricolo sinistro" },
+                { question: "Quale fase del ciclo cardiaco chiude le valvole atrio-ventricolari?", options: ["Sistole", "Diastole", "Sistole ventricolare", "Sistole atriale"], correct: "Sistole" },
+                { question: "Quale arteria è responsabile della circolazione sistemica?", options: ["Arteria polmonare", "Aorta", "Arteria carotidea", "Arteria femorale"], correct: "Aorta" },
+                { question: "Quale parte del cuore è più piccola per spessore?", options: ["Atrio destro", "Atrio sinistro", "Ventricolo destro", "Ventricolo sinistro"], correct: "Atrio sinistro" },
+                { question: "Quale valvola separa l’atrio destro dal ventricolo destro?", options: ["Valvola mitrale", "Valvola tricuspide", "Valvola aortica", "Valvola polmonare"], correct: "Valvola tricuspide" },
+                { question: "Quale strato del cuore protegge l’organo?", options: ["Pericardio", "Epicardio", "Miocardio", "Endocardio"], correct: "Pericardio" },
+                { question: "Quale vaso porta sangue deossigenato dal corpo?", options: ["Vena polmonare", "Vena cava", "Arteria polmonare", "Aorta"], correct: "Vena cava" },
+                { question: "Quale parte del cuore pompa sangue deossigenato ai polmoni?", options: ["Atrio destro", "Atrio sinistro", "Ventricolo destro", "Ventricolo sinistro"], correct: "Ventricolo destro" },
+                { question: "Quale malattia è associata a un’aritmia cardiaca?", options: ["Ischemia", "Aritmia", "Infarto", "Lesione valvolare"], correct: "Aritmia" },
+                { question: "Quanti litri di sangue pompa il cuore al minuto a riposo?", options: ["2 litri", "5 litri", "10 litri", "20 litri"], correct: "5 litri" },
+                { question: "Quale valvola ha una forma a semiluna e si trova tra il ventricolo destro e l’arteria polmonare?", options: ["Valvola mitrale", "Valvola tricuspide", "Valvola aortica", "Valvola polmonare"], correct: "Valvola polmonare" },
+                { question: "Quale parte del cuore riceve sangue dalla vena polmonare?", options: ["Atrio destro", "Atrio sinistro", "Ventricolo destro", "Ventricolo sinistro"], correct: "Atrio sinistro" },
+                { question: "Quale è la pressione diastolica ottimale per un adulto?", options: ["60 mmHg", "80 mmHg", "100 mmHg", "120 mmHg"], correct: "80 mmHg" },
+                { question: "Quale tipo di cellule sono responsabili della contrazione cardiaca?", options: ["Miocardiociti", "Neuroni", "Cellule epiteliali", "Cellule connettive"], correct: "Miocardiociti" },
+                { question: "Quale sistema nervoso regola il battito cardiaco?", options: ["Sistema nervoso centrale", "Sistema nervoso autonomo", "Sistema nervoso periferico", "Sistema nervoso somatico"], correct: "Sistema nervoso autonomo" },
+                { question: "Quale vaso porta sangue ossigenato al corpo?", options: ["Aorta", "Vena cava", "Arteria polmonare", "Vena polmonare"], correct: "Aorta" },
+                { question: "Quale parte del cuore è responsabile della sistole?", options: ["Atri", "Ventricoli", "Valvole", "Aorta"], correct: "Atri e ventricoli" },
+                { question: "Quale malattia è causata da un’infiammazione del pericardio?", options: ["Aritmia", "Infarto del miocardio", "Pericardite", "Infiammazione"], correct: "Pericardite" },
+                { question: "Quale parte del sistema circolatorio è responsabile della grande circolazione?", options: ["Sistema venoso", "Sistema arterioso", "Circolazione polmonare", "Capillari"], correct: "Sistema arterioso" },
+                { question: "Quale vaso si divide in aorta ascendente e discendente?", options: ["Arteria polmonare", "Aorta", "Arteria carotidea", "Arteria femorale"], correct: "Aorta" },
+                { question: "Quali vasi sono i più piccoli del sistema circolatorio?", options: ["Arterie", "Vene", "Capillari", "Venule"], correct: "Capillari" },
+                { question: "Quale parte del cuore comunica con l’atrio destro?", options: ["Atrio sinistro", "Ventricolo destro", "Ventricolo sinistro", "Aorta"], correct: "Ventricolo destro" },
+                { question: "Quale valvola ha due lembi contrapposti?", options: ["Valvola tricuspide", "Valvola mitrale", "Valvola aortica", "Valvola polmonare"], correct: "Valvola mitrale" },
+                { question: "Quale vaso trasporta sangue deossigenato dal cuore ai polmoni?", options: ["Arteria polmonare", "Vena polmonare", "Vena cava", "Aorta"], correct: "Arteria polmonare" },
+                { question: "Quale è il più grande tronco venoso del corpo superiore?", options: ["Vena cava superiore", "Vena cava inferiore", "Vena polmonare", "Vena femorale"], correct: "Vena cava superiore" },
+                { question: "Quale sistema è responsabile della circolazione sistemica?", options: ["Circolazione sistemica", "Circolazione polmonare", "Circolazione coronarica", "Circolazione periferica"], correct: "Circolazione sistemica" }
+            ]
+        ];
+
+        let currentQuiz = null;
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timeLeft = 30 * 60; // 30 minuti in secondi
+        let timerInterval;
+
+        // Genera le palline numerate
+        const ballsContainer = document.getElementById('quiz-balls');
+        for (let i = 1; i <= 30; i++) {
+            const ball = document.createElement('div');
+            ball.className = 'quiz-ball';
+            ball.id = `ball-${i}`;
+            ball.innerText = i;
+            ballsContainer.appendChild(ball);
+        }
+
+        // Timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('quiz-timer').innerText = `Tempo rimanente: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    endQuiz();
+                }
+            }, 1000);
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function selectQuiz() {
+            const quizSelect = document.getElementById('quiz-select');
+            const selectedQuiz = parseInt(quizSelect.value);
+            if (selectedQuiz === 0) {
+                document.getElementById('quiz-timer').style.display = 'none';
+                document.getElementById('quiz-balls').style.display = 'none';
+                document.getElementById('quiz-question').innerText = '';
+                document.getElementById('quiz-options').innerHTML = '';
+                document.getElementById('quiz-feedback').style.display = 'none';
+                document.getElementById('quiz-result').innerHTML = '';
+                document.getElementById('retry-button').style.display = 'none';
+                return;
+            }
+
+            currentQuiz = selectedQuiz - 1;
+            resetQuiz();
+        }
+
+        function loadQuizQuestion() {
+            const questionElement = document.getElementById('quiz-question');
+            const optionsElement = document.getElementById('quiz-options');
+            const feedbackElement = document.getElementById('quiz-feedback');
+            const resultElement = document.getElementById('quiz-result');
+            const retryButton = document.getElementById('retry-button');
+
+            if (currentQuestionIndex >= currentQuestions.length) {
+                endQuiz();
+                return;
+            }
+
+            const currentQuestion = currentQuestions[currentQuestionIndex];
+            questionElement.innerText = `Domanda ${currentQuestionIndex + 1}: ${currentQuestion.question}`;
+
+            optionsElement.innerHTML = '';
+            feedbackElement.style.display = 'none';
+            resultElement.innerHTML = '';
+            retryButton.style.display = 'none';
+
+            // Mescola le opzioni
+            const shuffledOptions = shuffleArray([...currentQuestion.options]);
+            shuffledOptions.forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'quiz-option';
+                optionElement.innerText = option;
+                optionElement.addEventListener('click', () => checkAnswer(option, currentQuestion.correct));
+                optionsElement.appendChild(optionElement);
+            });
+        }
+
+        function checkAnswer(selected, correct) {
+            const feedbackElement = document.getElementById('quiz-feedback');
+            feedbackElement.style.display = 'block';
+
+            // Colora la pallina corrispondente
+            const currentBall = document.getElementById(`ball-${currentQuestionIndex + 1}`);
+            if (selected === correct) {
+                currentBall.classList.add('correct');
+                feedbackElement.innerText = 'Corretto! Ottimo lavoro!';
+                feedbackElement.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                currentBall.classList.add('incorrect');
+                feedbackElement.innerText = `Sbagliato. La risposta corretta è: ${correct}.`;
+                feedbackElement.className = 'quiz-feedback incorrect';
+            }
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuizQuestion();
+            }, 1500);
+        }
+
+        function endQuiz() {
+            clearInterval(timerInterval);
+            const questionElement = document.getElementById('quiz-question');
+            const optionsElement = document.getElementById('quiz-options');
+            const feedbackElement = document.getElementById('quiz-feedback');
+            const resultElement = document.getElementById('quiz-result');
+            const timerElement = document.getElementById('quiz-timer');
+            const retryButton = document.getElementById('retry-button');
+
+            questionElement.innerText = 'Quiz Completato!';
+            optionsElement.innerHTML = '';
+            feedbackElement.style.display = 'none';
+            timerElement.style.display = 'none';
+            retryButton.style.display = 'block';
+
+            if (score >= 21) {
+                resultElement.innerText = `Hai superato il test! Punteggio: ${score}/30`;
+                resultElement.style.color = '#00ff00';
+            } else {
+                resultElement.innerText = `Torna a studiare! Punteggio: ${score}/30`;
+                resultElement.style.color = '#ff0000';
+            }
+        }
+
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            timeLeft = 30 * 60;
+            document.getElementById('quiz-timer').style.display = 'block';
+            document.getElementById('quiz-timer').innerText = 'Tempo rimanente: 30:00';
+            document.getElementById('quiz-balls').style.display = 'flex';
+            document.querySelectorAll('.quiz-ball').forEach(ball => {
+                ball.classList.remove('correct');
+                ball.classList.remove('incorrect');
+            });
+
+            // Mescola le domande per il quiz selezionato
+            currentQuestions = shuffleArray([...allQuestions[currentQuiz]]);
+
+            clearInterval(timerInterval);
+            startTimer();
+            loadQuizQuestion();
+        }
+
+        // Aggiungi evento al pulsante "Riprova"
+        document.getElementById('retry-button').addEventListener('click', resetQuiz);
+    </script>
+</body>
+</html>
